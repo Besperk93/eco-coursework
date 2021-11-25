@@ -125,7 +125,7 @@ def run_multiple_tests(epochs):
 
     best_vals = []
 
-    columns = ["Run", "Fit", "Gen", "Cost", "Num_Players", "Team"]
+    columns = ["Run", "Fit", "Gen", "Cost", "Num_Players", "Team", "BitString"]
     results = pd.DataFrame(columns=columns)
 
     for e in range(epochs):
@@ -137,15 +137,16 @@ def run_multiple_tests(epochs):
 
         # look through the log to see at what generation the best solution was found
 
-        for i in range(GEN):
-            fit = max[i]
+        for g in range(GEN):
+            fit = max[g]
             if fit == best:
                 break
 
 
-        print(f"max fitness is {best} and it was found at generation {i}")
+        print(f"max fitness is {best} and it was found at generation {g}")
 
         team = []
+        bit_string = hof[0]
         total_cost = 0
         for i in range(523):
             if hof[0][i] == 1:
@@ -156,12 +157,12 @@ def run_multiple_tests(epochs):
         print(team)
 
         best_vals.append(best)
-        results.loc[len(results)] = [str(e), str(best), str(i), str(total_cost), str(len(team)), str(team)]
+        results.loc[len(results)] = [str(e), str(best), str(g), str(total_cost), str(len(team)), str(team), bit_string]
 
     print(f"The average fitness for these parameters is: {np.mean(best_vals)}")
     print(f"With Standard Deviation: {np.std(best_vals)}")
     now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
-    results.to_csv(f"bitstring_results_{now}", "w")
+    results.to_csv(f"bitstring_results_{now}.csv", mode="w")
 
-run_multiple_tests(100)
+run_multiple_tests(4)
