@@ -15,6 +15,9 @@ max = df['Fit'].max()
 max_row = df.loc[df['Fit'].idxmax()]
 
 best_team = max_row['Team']
+
+print(best_team)
+
 bit_string = np.zeros(523)
 
 for i in range(523):
