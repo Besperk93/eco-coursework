@@ -165,9 +165,4 @@ def run_multiple_tests(epochs):
 
     results.to_csv(f"results/twoPoint_results_{epochs}_{now}.csv", mode="w")
 
-    box_plot = results.boxplot(column='Fit')
-
-    plt.savefig(f"charts/twoPoint_boxplot_{epochs}_{now}.png")
-    plt.show()
-
 run_multiple_tests(4)

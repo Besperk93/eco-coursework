@@ -97,8 +97,8 @@ def evalFantasyTeam(individual):
 
 # Register evolutionary operators that we want to use
 toolbox.register("evaluate", evalFantasyTeam)
-toolbox.register("mate", tools.cxUniform, indpb=0.5)
-toolbox.register("mutate", tools.mutFlipBit, indpb=0.002)
+toolbox.register("mate", tools.cxOnePoint)
+toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.002)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
 # create evolution function
@@ -163,6 +163,6 @@ def run_multiple_tests(epochs):
     print(f"With Standard Deviation: {np.std(best_vals)}")
     now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
-    results.to_csv(f"results/uniform_results_{epochs}_{now}.csv", mode="w")
+    results.to_csv(f"results/onePoint_results_{epochs}_{now}.csv", mode="w")
 
-run_multiple_tests(4)
+run_multiple_tests(10)
