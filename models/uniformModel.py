@@ -164,9 +164,7 @@ def run_multiple_tests(epochs):
     now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
     results.to_csv(f"results/uniform_results_{epochs}_{now}.csv", mode="w")
-
     box_plot = results.boxplot(column='Fit')
-
     plt.savefig(f"charts/uniform_boxplot_{epochs}_{now}.png")
     plt.show()
 
