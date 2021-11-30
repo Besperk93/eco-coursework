@@ -39,7 +39,7 @@ toolbox = base.Toolbox()
 
 toolbox.register("attr_bool", random.randint, 0, 1)
 toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, NBR_PLAYERS)
-toolbox.register("population_guess", initPopulation, list, creator.Individual, "popSeed.json")
+toolbox.register("population_guess", initPopulation, list, creator.Individual, "populations/popSeed.json")
 
 # Function to check if team is valid
 
@@ -163,6 +163,11 @@ def run_multiple_tests(epochs):
     print(f"With Standard Deviation: {np.std(best_vals)}")
     now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
-    results.to_csv(f"bitstring_results_{now}.csv", mode="w")
+    results.to_csv(f"results/twoPoint_results_{epochs}_{now}.csv", mode="w")
+
+    box_plot = results.boxplot(column='Fit')
+
+    plt.savefig(f"charts/twoPoint_boxplot_{epochs}_{now}.png")
+    plt.show()
 
 run_multiple_tests(4)
