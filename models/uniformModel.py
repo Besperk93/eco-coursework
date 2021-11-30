@@ -97,7 +97,7 @@ def evalFantasyTeam(individual):
 
 # Register evolutionary operators that we want to use
 toolbox.register("evaluate", evalFantasyTeam)
-toolbox.register("mate", tools.cxUniform)
+toolbox.register("mate", tools.cxUniform, indpb=0.5)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.002)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
