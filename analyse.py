@@ -38,22 +38,22 @@ def create_comparison_plots(data_loc):
     df_results = df_results[~df_results.Config.str.match('.*random.*|.*shuffle.*|.*uniform.*')]
     empty = df_results[df_results.Config.str.match('.*empty.*')]
     empty.boxplot(column='Fit')
-    plt.ylim(ymin=0)
+    plt.ylim(ymin=0, ymax=2000)
     plt.savefig('charts/empty_boxplot.png')
     plt.clf()
     onePicked = df_results[df_results.Config.str.match('.*onePicked.*')]
     onePicked.boxplot(column='Fit')
-    plt.ylim(ymin=0)
+    plt.ylim(ymin=0, ymax=2000)
     plt.savefig('charts/onePicked_boxplot.png')
     plt.clf()
     onePoint = df_results[df_results.Config.str.match('.*onePoint.*')]
     onePoint.boxplot(column='Fit')
-    plt.ylim(ymin=0)
+    plt.ylim(ymin=0, ymax=2000)
     plt.savefig('charts/onePoint_boxplot.png')
     plt.clf()
     twoPoint = df_results[df_results.Config.str.match('.*twoPoint.*')]
     twoPoint.boxplot(column='Fit')
-    plt.ylim(ymin=0)
+    plt.ylim(ymin=0, ymax=2000)
     plt.savefig('charts/twoPoint_boxplot.png')
     plt.clf()
     twoPoint.to_csv('two_point_test.csv', mode='w')
