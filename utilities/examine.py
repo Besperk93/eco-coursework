@@ -33,3 +33,5 @@ print(f"The total number of goalkeepers in the data is {GK.sum()}")
 print(f"The total number of defenders in the data is {DEF.sum()}")
 print(f"The total number of midfielders in the data is {MID.sum()}")
 print(f"The total number of strikers in the data is {STR.sum()}")
+
+print(data.describe())
