@@ -1,0 +1,17 @@
+run1 params:
+
+indpb = 0.002
+cxpb = 0.8
+mutpb = 0.2
+
+run2 params:
+
+indpb = 0.002
+cxpb = 0.2
+mutpb = 0.8
+
+run3 params:
+
+indpb = 0.002
+cxpb = 0.5
+mutpb = 0.5

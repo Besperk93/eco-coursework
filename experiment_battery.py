@@ -15,29 +15,34 @@ from datetime import datetime
 class experiment:
 
     def run_experiment(self):
-        for pops in self.POPSEEDS:
+        for popSeed in self.POPSEEDS:
+            print(f"RUNNING SEED: {popSeed}")
             try:
                 self.get_meta_attr(self.DATA_LOC)
                 self.initiate_deap()
                 self.establish_evaluator()
                 self.establish_selection()
-                self.establish_population(pops)
+                self.establish_population(popSeed)
             except Exception as e:
                 print(f"Error establishing population parameters: {repr(e)}")
             for cx in self.cxPARAMS:
+                print(f"RUNNING CROSSOVER: {cx}")
                 try:
                     self.establish_crossover(cx)
                 except Exception as e:
                     print(f"Error establishing crossover params: {repr(e)}")
+
                 for mx in self.mutPARAMS:
+                    print(f"RUNNING MUTATOR: {mx}")
                     try:
                         self.establish_mutator(mx)
                     except Exception as e:
                         print(f"Error establishing mutation params: {repr(e)}")
                     try:
-                        self.run_multiple_tests(self.EPOCHS, mx, cx, pops)
+                        self.run_multiple_tests(self.EPOCHS, mx, cx, popSeed)
                     except Exception as e:
                         print(f"Error running main: {repr(e)}")
+
 
 
     def run_multiple_tests(self, epochs, mut, cross, popSeed):
@@ -65,7 +70,7 @@ class experiment:
                     break
 
 
-            # print(f"max fitness is {best} and it was found at generation {g}")
+            print(f"max fitness is {best} and it was found at generation {g}")
 
             team = []
             bit_string = hof[0]
@@ -81,14 +86,14 @@ class experiment:
             best_vals.append(best)
             results.loc[len(results)] = [str(e), str(best), str(g), str(total_cost), str(len(team)), str(team), bit_string]
 
-        # print(f"The average fitness for these parameters is: {np.mean(best_vals)}")
-        # print(f"With Standard Deviation: {np.std(best_vals)}")
+        print(f"The average fitness for these parameters is: {np.mean(best_vals)}")
+        print(f"With Standard Deviation: {np.std(best_vals)}")
         now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-
-        results.to_csv(f"results/test1/{popSeed}_{cross}_{mut}_{epochs}_{now}.csv", mode="w")
+        results.to_csv(f"results/run2/{popSeed}_{cross}_{mut}_{epochs}_{now}.csv", mode="w")
 
     def main(self):
         try:
+            # Set up pop and hall of fame for each config
             pop = self.toolbox.population_guess()
             hof = tools.HallOfFame(1)
             toolbox = self.toolbox
@@ -96,6 +101,7 @@ class experiment:
             print(f"Error with pop/hof: {repr(e)}")
 
         try:
+            # Set up statistics for each config
             stats = tools.Statistics(lambda ind: ind.fitness.values)
             stats.register("avg", np.mean)
             stats.register("std", np.std)
@@ -105,16 +111,20 @@ class experiment:
             print(f"Error setting up stats: {repr(e)}")
 
         try:
-            pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.8, mutpb=0.2, ngen=self.GEN, stats=stats, halloffame=hof, verbose=False)
+            # Run algorithm
+            pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.2, mutpb=0.8, ngen=self.GEN, stats=stats, halloffame=hof, verbose=False)
             return pop, log, hof
         except Exception as e:
             print(f"Error running algo: {repr(e)}")
 
+
     def establish_selection(self):
+        # Register selection operator
         self.toolbox.register("select", tools.selTournament, tournsize=3)
 
 
     def establish_population(self, population):
+        # Register appropriate population seed depending on config
         if population == "random":
             self.toolbox.register("population_guess", self.initPopulation, list, creator.Individual, "populations/randomSeed.json")
         elif population == "empty":
@@ -123,9 +133,11 @@ class experiment:
             self.toolbox.register("population_guess", self.initPopulation, list, creator.Individual, "populations/oneSeed.json")
 
     def establish_evaluator(self):
+        # Register evaluation function
         self.toolbox.register("evaluate", self.evalFantasyTeam)
 
     def establish_mutator(self, mutate):
+        # Register appropriate mutation operator for config
         if mutate == "flipBit":
             self.toolbox.register("mutate", tools.mutFlipBit, indpb=0.002)
         elif mutate == "shuffle":
@@ -134,6 +146,7 @@ class experiment:
             print(f"Unknown mutation operator provided")
 
     def establish_crossover(self, mate):
+        # register appropriate crossover operator for config
         if mate == "onePoint":
             self.toolbox.register("mate", tools.cxOnePoint)
         elif mate == "twoPoint":
@@ -144,6 +157,7 @@ class experiment:
             print(f"Unknown crossover operator provided")
 
     def initPopulation(self, pcls, ind_init, filename):
+        # Get initial population from json file
         try:
             with open(filename, "r") as pop_file:
                 contents = json.load(pop_file)
@@ -152,6 +166,7 @@ class experiment:
             print(f"Error creating population: {repr(e)}")
 
     def initiate_deap(self):
+        # Set up a deap toolbox
         try:
             creator.create("FitnessMax", base.Fitness, weights=(1.0,))
             creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -162,7 +177,7 @@ class experiment:
             print(f"Error initiating Deap instance: {repr(e)}")
 
     def evalFantasyTeam(self, individual):
-
+        # Evaluate each representation with respect to the constraints and produce an appropriate fitness
         value = 0
         cost = 0
         GKs = 0
@@ -198,7 +213,7 @@ class experiment:
         return value,
 
     def check_valid(self, GKs, DEFs, MIDs, STRs):
-
+        # Check if there too many players in any position
         if GKs != self.NUM_GK:
             return False
         elif DEFs not in self.DEF_RANGE:
@@ -225,11 +240,15 @@ class experiment:
         self.DATA_LOC = data_loc
         self.GEN = generations
         self.EPOCHS = epochs
-        self.cxPARAMS = ["onePoint", "twoPoint", "uniform"]
-        self.mutPARAMS = ["flipBit", "shuffle"]
-        self.POPSEEDS = ["random", "empty", "onePicked"]
+        self.cxPARAMS = ["twoPoint"]
+        self.mutPARAMS = ["flipBit"]
+        self.POPSEEDS = ["empty"]
 
 
-dry_run = experiment("clean-data.csv", 100, 10)
+def main():
+    dry_run = experiment("clean-data.csv", 300, 100)
+    dry_run.run_experiment()
 
-dry_run.run_experiment()
+
+if __name__ == "__main__":
+    main()
