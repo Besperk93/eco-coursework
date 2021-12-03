@@ -1,3 +1,5 @@
+Probability parameters used when running experiment_battery.py
+
 run1 params:
 
 indpb = 0.002
