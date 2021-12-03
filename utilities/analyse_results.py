@@ -73,8 +73,3 @@ def create_boxplot(results_data):
     plt.ylim(ymin=0, ymax=2100)
     plt.savefig(f'charts/{name}_boxplot.png')
     plt.clf()
-
-
-most_popular_player(run1)
-most_popular_player(run2)
-most_popular_player(run3)
