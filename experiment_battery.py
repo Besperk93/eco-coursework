@@ -89,7 +89,7 @@ class experiment:
         print(f"The average fitness for these parameters is: {np.mean(best_vals)}")
         print(f"With Standard Deviation: {np.std(best_vals)}")
         now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-        results.to_csv(f"results/run2/{popSeed}_{cross}_{mut}_{epochs}_{now}.csv", mode="w")
+        results.to_csv(f"results/run3/{popSeed}_{cross}_{mut}_{epochs}_{now}.csv", mode="w")
 
     def main(self):
         try:
@@ -112,7 +112,7 @@ class experiment:
 
         try:
             # Run algorithm
-            pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.2, mutpb=0.8, ngen=self.GEN, stats=stats, halloffame=hof, verbose=False)
+            pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.5, ngen=self.GEN, stats=stats, halloffame=hof, verbose=False)
             return pop, log, hof
         except Exception as e:
             print(f"Error running algo: {repr(e)}")
